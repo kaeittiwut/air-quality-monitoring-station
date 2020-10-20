@@ -62,7 +62,25 @@ void setup() {
   timeClient.setTimeOffset(25200);  //GMT +7 = 25200
 }
 void loop() {
+  
+  station("station1"); //call function station for push data of station 1
   delay(1000);
+  station("station2");//call function station for push data of station 2
+  digitalWrite(2, HIGH); 
+  delay(100);
+  digitalWrite(2, LOW);// Turn the LED Blue on twice meaning push all station success
+  delay(100);
+  digitalWrite(2, HIGH);
+  delay(100);
+  digitalWrite(2, LOW);
+
+  // if use deep sleep, the microcontroller will re-connect wifi every time that wakeup
+//  esp_sleep_enable_timer_wakeup(30000000);
+//  esp_deep_sleep_start();
+   delay(10000);
+}
+
+void station(String stationX){
   // read data from PM detector sensor
 //  if (pms.readUntil(data))
 //  {
@@ -125,7 +143,7 @@ void loop() {
     root["PM25"] = randNumber25;
     root["PM100"] = randNumber100;
 
-  Firebase.push("Sensor", root); //In this case child name in firebase is Sensor
+  Firebase.push(stationX, root); //In this case child name in firebase is Sensor
   digitalWrite(2, HIGH); // Turn the LED Blue on meaning push success
   delay(1000);
   
@@ -135,11 +153,7 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
-  Serial.print("pushed to firebase!");
+  Serial.print(stationX + " pushed to firebase!");
   digitalWrite(2, LOW);
-
-  // if use deep sleep, the microcontroller will re-connect wifi every time that wakeup
-//  esp_sleep_enable_timer_wakeup(30000000);
-//  esp_deep_sleep_start();
-   delay(10000);
-}
+  delay(1000);
+  }
